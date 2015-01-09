@@ -3,24 +3,42 @@ import sbt._
 
 object QuadtreeBuild extends Build {
   lazy val buildSettings = Seq(
-    organization := "com.foursquare.geo",
+    organization := "com.foursquare",
     name := "quadtree",
-    version      := "0.1a",
+    version      := "0.1-SNAPSHOT",
     scalaVersion := "2.10.2",
     javacOptions ++= Seq("-source", "1.6", "-target", "1.6"),
     javacOptions in doc := Seq("-source", "1.6"),
 
     publishMavenStyle := true,
 
-    publishTo := {
+    publishTo <<= (version) { v =>
       val nexus = "https://oss.sonatype.org/"
-      //if (isSnapshot.value)
-        Some("snapshots" at nexus + "content/repositories/snapshots")
-      //else
-      //  Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+      if (v.endsWith("-SNAPSHOT"))
+        Some("snapshots" at nexus+"content/repositories/snapshots")
+      else
+        Some("releases" at nexus+"service/local/staging/deploy/maven2")
     },
 
     pomIncludeRepository := { _ => false },
+
+    credentials ++= {
+      val sonatype = ("Sonatype Nexus Repository Manager", "oss.sonatype.org")
+      def loadMavenCredentials(file: java.io.File) : Seq[Credentials] = {
+        xml.XML.loadFile(file) \ "servers" \ "server" map (s => {
+          val host = (s \ "id").text
+          val realm = if (host == sonatype._2) sonatype._1 else "Unknown"
+          Credentials(realm, host, (s \ "username").text, (s \ "password").text)
+        })
+      }
+      val ivyCredentials   = Path.userHome / ".ivy2" / ".credentials"
+      val mavenCredentials = Path.userHome / ".m2"   / "settings.xml"
+      (ivyCredentials.asFile, mavenCredentials.asFile) match {
+        case (ivy, _) if ivy.canRead => Credentials(ivy) :: Nil
+        case (_, mvn) if mvn.canRead => loadMavenCredentials(mvn)
+        case _ => Nil
+      }
+    },
 
     pomExtra := (
       <url>://github.com/foursquare/cc-shapefiles</url>
@@ -78,8 +96,8 @@ object QuadtreeBuild extends Build {
     resolvers += "cloudera" at "https://repository.cloudera.com/artifactory/cloudera-repos/",
     resolvers += "codahale" at "http://repo.codahale.com",
     resolvers += "springsource" at "http://repo.springsource.org/libs-release-remote",
-    resolvers ++= Seq("snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
-                      "releases"  at "http://oss.sonatype.org/content/repositories/releases"),
+    resolvers ++= Seq("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+                      "releases"  at "https://oss.sonatype.org/content/repositories/releases"),
 
     fork in run := true,
     publishMavenStyle := true,
@@ -112,16 +130,15 @@ object QuadtreeBuild extends Build {
 
   lazy val all = Project(id = "all",
     settings = defaultSettings ++ Seq(
-      publishArtifact := true
+      publishArtifact := false
     ),
-    base = file(".")) aggregate(quadtree)
+    base = file(".")) aggregate(quadtree, country_revgeo, timezone_revgeo)
 
   val geoToolsVersion = "9.2"
 
   lazy val quadtree = Project(id = "quadtree",
       base = file("quadtree"),
       settings = defaultSettings ++ specsSettings ++ Seq(
-        organization := "com.foursquare.geo",
         publishArtifact := true,
         libraryDependencies ++= Seq(
           "org.geotools" % "gt-shapefile" % geoToolsVersion,
@@ -133,19 +150,17 @@ object QuadtreeBuild extends Build {
       )
     )
 
-   lazy val country = Project(id = "country",
-      base = file("country"),
+   lazy val country_revgeo = Project(id = "country_revgeo",
+      base = file("country_revgeo"),
       settings = defaultSettings ++ specsSettings ++ Seq(
-        organization := "com.foursquare.geo",
         publishArtifact := true
       )
     ) dependsOn(quadtree)
 
 
-   lazy val timezone = Project(id = "timezone",
-      base = file("timezone"),
+   lazy val timezone_revgeo = Project(id = "timezone_revgeo",
+      base = file("timezone_revgeo"),
       settings = defaultSettings ++ specsSettings ++ Seq(
-        organization := "com.foursquare.geo",
         publishArtifact := true
       )
     ) dependsOn(quadtree)
