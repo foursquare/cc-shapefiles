@@ -3,8 +3,8 @@
 package com.foursquare.geo.quadtree
 
 import com.vividsolutions.jts.geom.{Coordinate, Envelope, Geometry}
-import java.net.URL
 import java.io.{File, Serializable}
+import java.net.URL
 import org.geotools.data.{DataStoreFactorySpi, FileDataStore}
 import org.geotools.data.shapefile.ShapefileDataStoreFactory
 import org.geotools.data.simple.{SimpleFeatureIterator, SimpleFeatureSource}

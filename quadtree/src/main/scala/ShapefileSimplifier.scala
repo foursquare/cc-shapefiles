@@ -2,7 +2,7 @@
 
 package com.foursquare.geo.quadtree
 
-import com.foursquare.geo.quadtree.ShapefileGeo.{ShapeTrieNode, GeoBounds, ShapeLeafNode}
+import com.foursquare.geo.quadtree.ShapefileGeo.{GeoBounds, ShapeLeafNode, ShapeTrieNode}
 import com.vividsolutions.jts.geom.{Coordinate, Geometry}
 import java.io.File
 import org.geotools.data._

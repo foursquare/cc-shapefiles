@@ -1,5 +1,7 @@
 import sbt.Keys._
 import sbt._
+import xerial.sbt.Sonatype._
+import SonatypeKeys._
 
 object QuadtreeBuild extends Build {
   lazy val buildSettings = Seq(
@@ -85,7 +87,7 @@ object QuadtreeBuild extends Build {
       }
   )
 
-  lazy val defaultSettings = super.settings ++ buildSettings ++ Defaults.defaultSettings ++ Seq(
+  lazy val defaultSettings = super.settings ++ buildSettings ++ Defaults.defaultSettings ++ sonatypeSettings ++ Seq(
     resolvers += "geomajas" at "http://maven.geomajas.org",
     resolvers += "osgeo" at "http://download.osgeo.org/webdav/geotools/",
     resolvers += "twitter" at "http://maven.twttr.com",
