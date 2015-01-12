@@ -7,7 +7,7 @@ object QuadtreeBuild extends Build {
   lazy val buildSettings = Seq(
     organization := "com.foursquare",
     name := "quadtree",
-    version      := "0.1-SNAPSHOT",
+    version      := "0.1a",
     scalaVersion := "2.10.2",
     javacOptions ++= Seq("-source", "1.6", "-target", "1.6"),
     javacOptions in doc := Seq("-source", "1.6"),
@@ -17,9 +17,9 @@ object QuadtreeBuild extends Build {
     publishTo <<= (version) { v =>
       val nexus = "https://oss.sonatype.org/"
       if (v.endsWith("-SNAPSHOT"))
-        Some("snapshots" at nexus+"content/repositories/snapshots")
+        Some("snapshots" at nexus + "content/repositories/snapshots")
       else
-        Some("releases" at nexus+"service/local/staging/deploy/maven2")
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
 
     pomIncludeRepository := { _ => false },
@@ -43,7 +43,7 @@ object QuadtreeBuild extends Build {
     },
 
     pomExtra := (
-      <url>://github.com/foursquare/cc-shapefiles</url>
+      <url>http://github.com/foursquare/cc-shapefiles</url>
       <licenses>
         <license>
           <name>BSD-style</name>
@@ -98,8 +98,6 @@ object QuadtreeBuild extends Build {
     resolvers += "cloudera" at "https://repository.cloudera.com/artifactory/cloudera-repos/",
     resolvers += "codahale" at "http://repo.codahale.com",
     resolvers += "springsource" at "http://repo.springsource.org/libs-release-remote",
-    resolvers ++= Seq("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
-                      "releases"  at "https://oss.sonatype.org/content/repositories/releases"),
 
     fork in run := true,
     publishMavenStyle := true,
