@@ -2,6 +2,11 @@ import sbt.Keys._
 import sbt._
 import xerial.sbt.Sonatype._
 import SonatypeKeys._
+import com.typesafe.sbt.SbtGit.{GitKeys => git}
+import com.typesafe.sbt.SbtGit._
+import com.typesafe.sbt.SbtSite.site
+import sbtunidoc.Plugin.UnidocKeys._
+import sbtunidoc.Plugin._
 
 object QuadtreeBuild extends Build {
   lazy val buildSettings = Seq(
@@ -24,6 +29,10 @@ object QuadtreeBuild extends Build {
 
     pomIncludeRepository := { _ => false },
 
+    // firt try to load from .ivy2 which includes Realm
+    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+
+    // if not, load from .m2
     credentials ++= {
       val sonatype = ("Sonatype Nexus Repository Manager", "oss.sonatype.org")
       def loadMavenCredentials(file: java.io.File) : Seq[Credentials] = {
@@ -87,7 +96,15 @@ object QuadtreeBuild extends Build {
       }
   )
 
-  lazy val defaultSettings = super.settings ++ buildSettings ++ Defaults.defaultSettings ++ sonatypeSettings ++ Seq(
+  com.typesafe.sbt.SbtSite.site.includeScaladoc()
+
+  lazy val defaultSettings = super.settings ++ buildSettings ++ Defaults.defaultSettings ++ sonatypeSettings ++
+   com.typesafe.sbt.SbtGhPages.ghpages.settings ++
+   unidocSettings ++
+    com.typesafe.sbt.SbtSite.site.settings ++
+      Seq(
+    site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "latest/api"),
+    git.gitRemoteRepo := "git@github.com:foursquare/cc-shapefiles.git",
     resolvers += "geomajas" at "http://maven.geomajas.org",
     resolvers += "osgeo" at "http://download.osgeo.org/webdav/geotools/",
     resolvers += "twitter" at "http://maven.twttr.com",
@@ -103,7 +120,6 @@ object QuadtreeBuild extends Build {
     publishMavenStyle := true,
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => false },
-    Keys.publishArtifact in (Compile, Keys.packageDoc) := false,
 
     pomExtra := (
       <url>http://github.com/foursquare/twofishes</url>
