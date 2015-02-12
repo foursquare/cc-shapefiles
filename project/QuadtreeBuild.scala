@@ -148,7 +148,7 @@ object QuadtreeBuild extends Build {
     settings = defaultSettings ++ Seq(
       publishArtifact := false
     ),
-    base = file(".")) aggregate(quadtree, country_revgeo, timezone_revgeo)
+    base = file(".")) aggregate(quadtree, country_revgeo, timezone_revgeo, timezone_lookup)
 
   val geoToolsVersion = "9.2"
 
@@ -176,6 +176,13 @@ object QuadtreeBuild extends Build {
 
    lazy val timezone_revgeo = Project(id = "timezone_revgeo",
       base = file("timezone_revgeo"),
+      settings = defaultSettings ++ specsSettings ++ Seq(
+        publishArtifact := true
+      )
+    ) dependsOn(quadtree)
+
+    lazy val timezone_lookup = Project(id = "timezone_lookup",
+      base = file("timezone_lookup"),
       settings = defaultSettings ++ specsSettings ++ Seq(
         publishArtifact := true
       )
