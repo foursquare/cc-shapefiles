@@ -12,3 +12,5 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-ghpages" % "0.5.3")
 
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.3.1")
 
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.5")
+

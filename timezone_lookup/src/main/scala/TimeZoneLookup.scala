@@ -35,13 +35,11 @@ object TimeZoneLookup {
     val iterator: SimpleFeatureIterator = featureSource.getFeatures.features
 
     val shapeMap = new mutable.HashMap[String, Geometry]
-    try {
-      while (iterator.hasNext) {
-        val feature = iterator.next()
-        val sourceGeometry = feature.getDefaultGeometry().asInstanceOf[Geometry]
-        val keyValueCopy = feature.getAttribute(keyAttribute).toString
-        shapeMap(keyValueCopy) = sourceGeometry
-      }
+    while (iterator.hasNext) {
+      val feature = iterator.next()
+      val sourceGeometry = feature.getDefaultGeometry().asInstanceOf[Geometry]
+      val keyValueCopy = feature.getAttribute(keyAttribute).toString
+      shapeMap(keyValueCopy) = sourceGeometry
     }
 
     shapeMap.toMap

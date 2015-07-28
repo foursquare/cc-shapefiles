@@ -7,13 +7,15 @@ import com.typesafe.sbt.SbtGit._
 import com.typesafe.sbt.SbtSite.site
 import sbtunidoc.Plugin.UnidocKeys._
 import sbtunidoc.Plugin._
+import net.virtualvoid.sbt.graph.Plugin.graphSettings
 
 object QuadtreeBuild extends Build {
   lazy val buildSettings = Seq(
     organization := "com.foursquare",
     name := "quadtree",
     version      := "0.1a",
-    scalaVersion := "2.10.2",
+    scalaVersion := "2.11.4",
+    crossScalaVersions := Seq("2.11.4", "2.10.2"),
     javacOptions ++= Seq("-source", "1.6", "-target", "1.6"),
     javacOptions in doc := Seq("-source", "1.6"),
 
@@ -88,17 +90,19 @@ object QuadtreeBuild extends Build {
         val specs2 =
           if (version.startsWith("2.10"))
           "org.specs2" %% "specs2" % "1.14" % "test"
-        else if (version == "2.9.3")
-          "org.specs2" %% "specs2" % "1.12.4.1" % "test"
-        else
-          "org.specs2" %% "specs2" % "1.12.3" % "test"
+          else if (version == "2.9.3")
+            "org.specs2" %% "specs2" % "1.12.4.1" % "test"
+          else if (version.startsWith("2.11"))
+            "org.specs2" %% "specs2-core" % "2.4.17" % "test"
+          else
+            "org.specs2" %% "specs2" % "1.12.3" % "test"
         dependencies :+ specs2
       }
   )
 
   com.typesafe.sbt.SbtSite.site.includeScaladoc()
 
-  lazy val defaultSettings = super.settings ++ buildSettings ++ Defaults.defaultSettings ++ sonatypeSettings ++
+  lazy val defaultSettings = super.settings ++ buildSettings ++ Defaults.defaultSettings ++ sonatypeSettings ++ graphSettings ++
    com.typesafe.sbt.SbtGhPages.ghpages.settings ++
    unidocSettings ++
     com.typesafe.sbt.SbtSite.site.settings ++
@@ -161,7 +165,7 @@ object QuadtreeBuild extends Build {
           "org.geotools" % "gt-epsg-hsql" % geoToolsVersion,
           "org.geotools" % "gt-epsg-extension" % geoToolsVersion,
           "org.geotools" % "gt-referencing" % geoToolsVersion,
-          "org.scalaj" %% "scalaj-collection" % "1.5"
+          "org.scalaj" %% "scalaj-collection" % "1.6"
         )
       )
     )
