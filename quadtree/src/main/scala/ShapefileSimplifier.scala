@@ -11,7 +11,7 @@ import org.geotools.data.simple.SimpleFeatureSource
 import org.geotools.feature.{AttributeTypeBuilder, NameImpl}
 import org.geotools.feature.simple.SimpleFeatureTypeImpl
 import org.opengis.feature.`type`.{AttributeDescriptor, AttributeType}
-import scalaj.collection.Imports._
+import scala.collection.JavaConverters._
 
 object ShapefileSimplifier{
   val defaultLevels = Array(1000,10,4,4)
@@ -148,7 +148,7 @@ object ShapefileSimplifier{
     // Attrs/Features:
     // http://docs.geotools.org/latest/userguide/library/main/feature.html
     val storeFactory: DataStoreFactorySpi = new ShapefileDataStoreFactory()
-    val create = Map( "url" -> simplified.toURI.toURL)
+    val create = Map[String,java.io.Serializable]( "url" -> simplified.toURI.toURL)
     val saveStore = storeFactory.createNewDataStore(create.asJava)
     val oldSchema = originalSource.getSchema
     val descriptorList:java.util.List[AttributeDescriptor] = new java.util.ArrayList[AttributeDescriptor]()

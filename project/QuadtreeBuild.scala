@@ -14,10 +14,10 @@ object QuadtreeBuild extends Build {
     organization := "com.foursquare",
     name := "quadtree",
     version      := "0.1a",
-    scalaVersion := "2.11.4",
-    crossScalaVersions := Seq("2.11.4", "2.10.2"),
-    javacOptions ++= Seq("-source", "1.6", "-target", "1.6"),
-    javacOptions in doc := Seq("-source", "1.6"),
+    scalaVersion := "2.12.2",
+    crossScalaVersions := Seq("2.12.2", "2.11.11"),
+    javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
+    javacOptions in doc := Seq("-source", "1.7"),
 
     publishMavenStyle := true,
 
@@ -88,14 +88,12 @@ object QuadtreeBuild extends Build {
   lazy val specsSettings = Seq(
       libraryDependencies <<= (scalaVersion, libraryDependencies) {(version, dependencies) =>
         val specs2 =
-          if (version.startsWith("2.10"))
-          "org.specs2" %% "specs2" % "1.14" % "test"
-          else if (version == "2.9.3")
-            "org.specs2" %% "specs2" % "1.12.4.1" % "test"
+          if (version.startsWith("2.12"))
+            "org.specs2" %% "specs2-core" % "2.4.17" % "test"
           else if (version.startsWith("2.11"))
             "org.specs2" %% "specs2-core" % "2.4.17" % "test"
           else
-            "org.specs2" %% "specs2" % "1.12.3" % "test"
+            throw new Exception(s"Unrecognized major Scala version: $version")
         dependencies :+ specs2
       }
   )
@@ -164,8 +162,7 @@ object QuadtreeBuild extends Build {
           "org.geotools" % "gt-shapefile" % geoToolsVersion,
           "org.geotools" % "gt-epsg-hsql" % geoToolsVersion,
           "org.geotools" % "gt-epsg-extension" % geoToolsVersion,
-          "org.geotools" % "gt-referencing" % geoToolsVersion,
-          "org.scalaj" %% "scalaj-collection" % "1.6"
+          "org.geotools" % "gt-referencing" % geoToolsVersion
         )
       )
     )
