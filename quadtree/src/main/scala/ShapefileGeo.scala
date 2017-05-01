@@ -9,7 +9,7 @@ import org.geotools.data.{DataStoreFactorySpi, FileDataStore}
 import org.geotools.data.shapefile.ShapefileDataStoreFactory
 import org.geotools.data.simple.{SimpleFeatureIterator, SimpleFeatureSource}
 import org.geotools.geometry.jts.JTSFactoryFinder
-import scalaj.collection.Imports._
+import scala.collection.JavaConverters._
 
 /** A loader for our custom shapefiles used in reverse geocoding
   *
