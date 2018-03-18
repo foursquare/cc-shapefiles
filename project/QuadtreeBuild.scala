@@ -13,7 +13,7 @@ object QuadtreeBuild extends Build {
   lazy val buildSettings = Seq(
     organization := "com.foursquare",
     name := "quadtree",
-    version      := "0.1a",
+    version      := "0.1b",
     scalaVersion := "2.12.2",
     crossScalaVersions := Seq("2.12.2", "2.11.11"),
     javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
